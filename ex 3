@@ -1,3 +1,4 @@
+//Write a lex program to find out total number of vowels, and consonants from the given input string.
 %{
     int vow_count = 0;
     int const_count = 0;
