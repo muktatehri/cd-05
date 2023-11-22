@@ -1,3 +1,4 @@
+//lexical analyzer for given language using C and the lexicalanalyzer should ignore redundant spaces, tabs and new lines
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
