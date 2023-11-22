@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_PROD 10
+#define MAX_LEN 10
+
+typedef struct {
+    char nonTerminal;
+    char production[MAX_LEN];
+} Production;
+
+Production grammar[MAX_PROD];
+int numProductions;
+
+void calculateFirst(char nonTerminal, char firstSet[]);
+void calculateFollow(char nonTerminal, char followSet[]);
+
+int main() {
+    int i;
+    char nonTerminal;
+    char firstSet[MAX_LEN];
+    char followSet[MAX_LEN];
+
+    // Input the compiler grammar productions
+    printf("Enter the number of productions: ");
+    scanf("%d", &numProductions);
+
+    printf("Enter the compiler grammar productions (e.g., E=TE', T=FT', F=(E)|id, ...):\n");
+    for (i = 0; i < numProductions; ++i) {
+        scanf(" %c=%s", &grammar[i].nonTerminal, grammar[i].production);
+    }
+
+    // Calculate and display First and Follow sets
+    printf("\nFirst and Follow sets:\n");
+    for (i = 0; i < numProductions; ++i) {
+        nonTerminal = grammar[i].nonTerminal;
+
+        // Calculate and display First set
+        calculateFirst(nonTerminal, firstSet);
+        printf("First(%c): {%s}\n", nonTerminal, firstSet);
+
+        // Calculate and display Follow set
+        calculateFollow(nonTerminal, followSet);
+        printf("Follow(%c): {%s}\n", nonTerminal, followSet);
+
+        printf("\n");
+    }
+
+    return 0;
+}
+
+void calculateFirst(char nonTerminal, char firstSet[]) {
+    int i;
+    firstSet[0] = '\0';
+
+    for (i = 0; i < numProductions; ++i) {
+        if (grammar[i].nonTerminal == nonTerminal) {
+            if (isupper(grammar[i].production[0])) {
+                calculateFirst(grammar[i].production[0], firstSet);
+            } else {
+                strncat(firstSet, grammar[i].production, 1);
+            }
+        }
+    }
+}
+
+void calculateFollow(char nonTerminal, char followSet[]) {
+    int i, j;
+    followSet[0] = '\0';
+
+    if (nonTerminal == grammar[0].nonTerminal) {
+        strcat(followSet, "$");
+    }
+
+    for (i = 0; i < numProductions; ++i) {
+        for (j = 0; j < strlen(grammar[i].production); ++j) {
+            if (grammar[i].production[j] == nonTerminal) {
+                if (j == strlen(grammar[i].production) - 1) {
+                    if (grammar[i].nonTerminal != nonTerminal) {
+                        calculateFollow(grammar[i].nonTerminal, followSet);
+                    }
+                } else {
+                    char nextSymbol = grammar[i].production[j + 1];
+                    if (isupper(nextSymbol)) {
+                        char firstSet[MAX_LEN];
+                        calculateFirst(nextSymbol, firstSet);
+                        strcat(followSet, firstSet);
+                        if (strchr(firstSet, 'e') != NULL) {
+                            followSet[strlen(followSet) - 1] = '\0';
+                            calculateFollow(grammar[i].nonTerminal
+
+
