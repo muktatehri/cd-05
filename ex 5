@@ -1,3 +1,7 @@
+//Program to recognize a valid arithmetic expression that uses operator +, – , * and /.
+
+
+
 %{
 #include <stdio.h>
 #include <string.h>
