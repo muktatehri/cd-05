@@ -1,3 +1,4 @@
+//Implement the lexical analyzer using JLex/ flex or lex or other lexical analyzer
 %{
 #include<stdio.h>
 int COMMENT=0;
